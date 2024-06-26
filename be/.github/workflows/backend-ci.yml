@@ -1,0 +1,22 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout backend code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies and test
+        run: |
+          cd be
+          pip install -r requirements.txt
+          python manage.py test
