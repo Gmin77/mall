@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import Header from './component/jsx/Header'
 import Main from './component/jsx/Main'
 import Footer from './component/jsx/Footer'
