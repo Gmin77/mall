@@ -1,7 +1,15 @@
 from django.urls import path
-from .views import ItemListCreateAPIView, ItemRetrieveUpdateDestroyAPIView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+from . import api
 
 urlpatterns = [
-    path('items/', ItemListCreateAPIView.as_view(), name='item-list-create'),
-    path('items/<int:pk>/', ItemRetrieveUpdateDestroyAPIView.as_view(), name='item-detail'),
+    path('me/', api.me, name='me'),
+    path('signup/', api.signup, name='signup'),
+    path('login/', TokenObtainPairView.as_view(), name='token_obtain'),
+    path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('editprofile/', api.editprofile, name='editprofile'),
+    path('editpassword/', api.editpassword, name='editpassword'),
+
+    path('me/noimg/', api.me_noimg, name='me_noimg'),
 ]

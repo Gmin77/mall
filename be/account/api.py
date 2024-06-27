@@ -1,9 +1,9 @@
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .serializers import UserSerializerNoIMG
+from .serializers import UserSerializerNoIMG, UserSerializers
 from django.contrib.auth.forms import PasswordChangeForm
-from .forms import SignupForm
+from .forms import SignupForm, ProfileForm
 from .models import User
 
 @api_view(['GET'])
@@ -43,7 +43,7 @@ def signup(request):
         'detail_address' : data.get('detail_address'),
     })
 
-    if form.is_vaild():
+    if form.is_valid():
         form.save()
     else :
         messaage = form.errors.as_json()
@@ -55,19 +55,28 @@ def signup(request):
 def editprofile(request):
     user = request.user
     name = request.data.get('name')
-    real_name = request.data.get('real_name')
-    address = request.data.get('address')
-    detail_address = request.data.get('detail_address')
+    # real_name = request.data.get('real_name')
+    # address = request.data.get('address')
+    # detail_address = request.data.get('detail_address')
 
     if User.objects.exclude(id=user.id).filter(name=name).exists():
         return JsonResponse({'message': 'nickname already exists'})
+    else:
+        form = ProfileForm(request.data, request.FILES, instance=user)
+
+        if form.is_valid():
+            form.save()
+
+        serializer = UserSerializers(user)
+        
+        return JsonResponse({'message': 'information updated', 'user': serializer.data})
     
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def editpassword(request):
-    user = request.use
+    user = request.user
 
-    form = PasswordChangeForm(data=request.POST, user=user)
+    form = PasswordChangeForm(user, request.data)
 
     if form.is_valid():
         form.save()
